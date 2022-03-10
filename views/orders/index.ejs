@@ -1,0 +1,19 @@
+
+  <!-- <% if (messages.error) { %>
+    <%= messages.error %>
+  <% } %> -->
+  <form action="/orders" method="POST">
+    <div>
+      <label for="orderName">OrderName:</label>
+      <input type="text" id="orderName" name="orderName" required>
+    </div>
+    <div>
+      <label for="customerName">customerName:</label>
+      <input type="text" id="customerName" name="customerName" required>
+    </div>
+    <div>
+      <label for="orderNumber">orderNumber:</label>
+      <input type="number" id="orderNumber" name="orderNumber" required>
+    </div>
+    <button type="submit">Place order</button>
+  </form>
