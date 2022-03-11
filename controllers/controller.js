@@ -10,8 +10,7 @@ var exports = module.exports = {}
       else {
           res.redirect('/login');
           return;
-      }
-    
+      }  
 }
 
 const loginView = (req,res) => {

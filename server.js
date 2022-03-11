@@ -14,22 +14,40 @@ var models= require('./models')
 var path = require("path")
 var exphbs = require('express-handlebars');
 
-const viewpath= path.join(__dirname,"/views")
+const viewpath= path.join(__dirname,"/views/pages")
 const ejs = require('ejs');
 
+//---------------------------------------------------------------------------------------
+//Facebook Login
+const FacebookStrategy = require('passport-facebook').Strategy;
+var config = require('./config/fbconfig')
+passport.serializeUser(function (user, cb) {
+  cb(null, user);
+});
 
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj);
+});
 
-//  app.set('views', path.join(__dirname, 'views'))
+passport.use(new FacebookStrategy({
+    clientID: config.facebookAuth.clientID,
+    clientSecret: config.facebookAuth.clientSecret,
+    callbackURL: config.facebookAuth.callbackURL
+  }, function (accessToken, refreshToken, profile, done) {
+    return done(null, profile);
+  }
+));
 
-const initializePassport = require('./passport-config')
+//---------------------------------------------------------------------------------------
+
+const initializePassport = require('./passport-config');
 initializePassport(
   passport,
   email => users.find(user => user.email === email),
   id => users.find(user => user.id === id)
 )
 
-const users = []
-
+app.use('/img/', express.static('./img'));
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded({ extended: false }))
 app.use(flash())
@@ -77,14 +95,6 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
       password:hashedPassword,
     })
  
-
-    // const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    // users.push({
-    //   id: Date.now().toString(),
-    //   name: req.body.name,
-    //   email: req.body.email,
-    //   password: hashedPassword
-    // })
     res.redirect('/login')
 
   } catch (ex) {
@@ -168,15 +178,26 @@ app.post('/update', async(req, res)=>{
       }
     });
 
-  res.json('Data Updated Successfully');
-  
-
+  res.redirect('/');
  } catch(ex){
   res.render('orders/edit.ejs', ex)
   }
 })
 
+//----------------------------Facebook Login--------------------------------------------------
 
+
+app.get('/auth/facebook', passport.authenticate('facebook', {
+  scope: ['public_profile', 'email']
+}));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  }));
+
+//-----------------------------------------------------------------------
 
 app.delete('/logout', (req, res) => {
   req.logOut()
@@ -201,3 +222,5 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 app.listen(3000)
+
+

@@ -1,7 +1,28 @@
-<h1>Hi <%= user.name %></h1>
-<form action="/logout?_method=DELETE" method="POST">
-  <button type="submit">Log Out</button>
-</form>
-<a href="/orders">Place an Order</a><br>
-<a href="/delete">Delete Order</a><br>
-<a href="/update">Edit Order</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('./partials/head'); %>
+</head>
+
+<body class="container">
+<header>
+  <%- include('./partials/header'); %>
+</header>
+
+<main>
+
+    <h1>Hi <%= user.name %></h1>
+    <h3>You are logged in as: <%= user.email %></h3>
+ 
+    <h5><b><%= user.displayName %></b></h5>
+    <p><strong>Facebook id</strong>: <%= user.id %></p>
+
+  
+</main>
+
+<footer>
+  <%- include('./partials/footer'); %>
+</footer>
+
+</body>
+</html>
